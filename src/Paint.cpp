@@ -6,6 +6,8 @@ Paint::Paint()
   CreateTiles();
   glm_vec3_zero(color);
   flag_clear = false;
+  flag_draw = false;
+  can_draw = false;
 }
 
 Paint::~Paint()
@@ -38,7 +40,7 @@ void Paint::CreateTiles()
 
 void Paint::CheckTile(size_t x, size_t y)
 {
-  std::cout <<"mouse x,y: "<< x << " " << y <<std::endl;
+  //std::cout <<"mouse x,y: "<< x << " " << y <<std::endl;
 
   size_t num_x = window_x / tile_x;
   size_t num_y = window_y / tile_y;
@@ -50,19 +52,38 @@ void Paint::CheckTile(size_t x, size_t y)
   npos_y = y % tile_y;
   npos_x = (x - npos_x)/tile_x;
   npos_y = (y - npos_y)/tile_y;
-  std::cout << "npos: " <<npos_x << " " << npos_y <<std::endl;
+  //std::cout << "npos: " <<npos_x << " " << npos_y <<std::endl;
   size_t num = npos_x + npos_y*num_x;
 
   vec3 ncolor;
-  if(!flag_clear)glm_vec3_copy(color, ncolor);
-  else glm_vec3_one(ncolor);
-  tiles.at(num).SetColor(ncolor);
-
+  if(flag_clear)
+  {
+    flag_draw = !flag_clear;
+    glm_vec3_one(ncolor);
+    if(can_draw)tiles.at(num).SetColor(ncolor);
+    return;
+  }
+  if(flag_draw)
+  {
+    flag_clear = !flag_draw;
+    glm_vec3_copy(color, ncolor);
+    if(can_draw)tiles.at(num).SetColor(ncolor);
+    return;
+  }
 }
 
 void Paint::Render(mat4 ortho_matrix)
 {
   for (size_t i = 0; i < tiles.size(); i++) {
     tiles.at(i).Render(ortho_matrix);
+  }
+}
+
+void Paint::ClearAll()
+{
+  for (size_t i = 0; i < tiles.size(); i++) {
+    vec3 ncolor;
+    glm_vec3_one(ncolor);
+    tiles.at(i).SetColor(ncolor);
   }
 }
