@@ -25,10 +25,13 @@ public:
 
   vec3 color;
   bool flag_clear;
+  bool flag_draw;
+  bool can_draw;
 
   std::vector<Tile>tiles;
   void CheckTile(size_t x, size_t y);
   void Render(mat4 ortho_matrix);
+  void ClearAll();
 };
 
 

@@ -74,18 +74,11 @@ void Manager::framebuffer_size_callback(GLFWwindow* window, int width, int heigh
 
 void Manager::mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
-  if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
-  {
-    if(Manager::paint == nullptr)return;
-    double xpos, ypos;
-    glfwGetCursorPos(window, &xpos, &ypos);
-    ypos = 600 - ypos;
-    Manager::paint->CheckTile((size_t)xpos, (size_t)ypos);
-  }
     if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
     {
-      if(Manager::paint == nullptr)return;
-      Manager::paint->flag_clear = !Manager::paint->flag_clear;
+      //DEPRACATED
+      //if(Manager::paint == nullptr)return;
+      //Manager::paint->flag_clear = !Manager::paint->flag_clear;
     }
 }
 
@@ -104,8 +97,17 @@ void Manager::GUI()
   ImGui::NewFrame();
 
   ImGui::Begin("Toolbox");
+  if(!ImGui::IsWindowFocused())Manager::paint->can_draw = true;
+  else Manager::paint->can_draw = false;
+
+  ImVec2 window_pos = ImGui::GetWindowPos();
+  ImVec2 window_size = ImGui::GetWindowSize();
 
   ImGui::ColorEdit3("clear color", (float*)clear_color); // Edit 3 floats representing a color
+  ImGui::Checkbox("Draw", &Manager::paint->flag_draw);
+  ImGui::SameLine();
+  ImGui::Checkbox("Clear", &Manager::paint->flag_clear);
+  if (ImGui::Button("Clear Me"))Manager::paint->ClearAll();
   ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
   ImGui::End();
 
@@ -150,7 +152,15 @@ void Manager::Loop()
 
 void Manager::Update(float dt)
 {
-
+  int state = glfwGetMouseButton(m_window, GLFW_MOUSE_BUTTON_LEFT);
+  if (state == GLFW_PRESS)
+  {
+    if(Manager::paint == nullptr)return;
+    double xpos, ypos;
+    glfwGetCursorPos(m_window, &xpos, &ypos);
+    ypos = 600 - ypos;
+    Manager::paint->CheckTile((size_t)xpos, (size_t)ypos);
+  }
 }
 
 void Manager::Render()
