@@ -107,11 +107,11 @@ void Manager::GUI()
   {
     //Manager::paint->can_draw = false;
   }
-  std::cout << "IO: " << io.MousePos.x << " " << io.MousePos.y << std::endl;
+  /*std::cout << "IO: " << io.MousePos.x << " " << io.MousePos.y << std::endl;
   std::cout << "X: " << window_pos.x << "--" << window_pos.x + window_size.x<< std::endl;
   std::cout << "Y: " << window_pos.y << "--" << window_pos.y + window_size.y<< std::endl;
   std::cout << "window_size: " << window_size.x << " " << window_size.y << std::endl;
-
+  */
   ImGui::ColorEdit3("clear color", (float*)clear_color); // Edit 3 floats representing a color
   ImGui::Checkbox("Draw", &Manager::paint->flag_draw);
   ImGui::SameLine();
