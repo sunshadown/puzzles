@@ -1,5 +1,7 @@
 #include "Tile.h"
 
+//extern "C"  unsigned lodepng_load_file(unsigned char*, size_t*, char*);
+//extern "C" unsigned lodepng_decode32(unsigned char*, unsigned*, unsigned*, unsigned char*, size_t);
 
 Tile::Tile()
 {
@@ -20,6 +22,7 @@ void Tile::Init()
   glm_vec3_one(color);
   rotate = 0.0f;
   m_depth = 0.0f;
+  haveImage = false;
 
   InitBuffer();
   InitShader();
@@ -94,23 +97,54 @@ void Tile::Render(mat4 ortho_matrix)
   glBindVertexArray(vao);
   shader.Bind();
 
-  //glEnable(GL_TEXTURE_2D);
-  //glActiveTexture(GL_TEXTURE0);
-  //glBindTexture(GL_TEXTURE_2D,model->tex_uniform->uniform_id);
+  if(haveImage)
+  {
+    glEnable(GL_TEXTURE_2D);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D,tex_id);
+    glUniform1i(shader.GetLocation("fixed_uniform"), 1);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+  }
 
-  //glUniform1i(glGetUniformLocation(model->program_id,model->tex_uniform->uniform_name),0);
   glUniformMatrix4fv(shader.GetLocation("projection"), 1, GL_FALSE, ortho_matrix[0]);
   glUniformMatrix4fv(shader.GetLocation("model"), 1, GL_FALSE, model_matrix[0]);
   glUniform1f(shader.GetLocation("m_depth"), m_depth);
   glUniform3f(shader.GetLocation("m_color"), color[0],color[1],color[2]);
 
-  //glEnable(GL_BLEND);
-  //glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
 
   glDrawArrays(GL_TRIANGLES, 0, elements_size);
 
   glDisable(GL_BLEND);
   glBindVertexArray(0);
+}
+
+void Tile::LoadImage(std::string path)
+{
+  /*unsigned error;
+  unsigned char* image = 0;
+  unsigned width, height;
+  unsigned char* png = 0;
+  size_t pngsize;
+
+  error = lodepng_load_file(&png, &pngsize, path.c_str());
+  if(error) printf("error %u: %s\n", error, lodepng_error_text(error));
+  if(!error) error = lodepng_decode32(&image, &width, &height, png, pngsize);
+  if(error) printf("error %u: %s\n", error, lodepng_error_text(error));
+
+  free(png);
+
+  glGenTextures(1,&tex_id);
+  glEnable(GL_TEXTURE_2D);
+  glBindTexture(GL_TEXTURE_2D,tex_id);
+
+  glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+  glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,width,height,0, GL_RGBA, GL_UNSIGNED_BYTE,image);
+
+  free(image);
+  */
 }
 
 void Tile::SetPosition(vec3 position)

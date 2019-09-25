@@ -11,13 +11,16 @@
 #include "../lib/includes/cglm/affine.h"
 #include "../lib/includes/cglm/common.h"
 #include "../lib/includes/cglm/types.h"
-
+//IMAGELOADER
+#include "../lib/lodepng.h"
+////////////////////////
+#include <string>
 #include "Shader.h"
 
 class Tile
 {
 private:
-  GLuint vao, vbo, ebo;
+  GLuint vao, vbo, ebo, tex_id;
   uint32_t elements_size;
   mat4 model_matrix;
   vec3 position;
@@ -28,6 +31,8 @@ private:
   float m_depth;
   Shader shader;
 
+  bool haveImage;
+
   void Init();
   void InitBuffer();
   void InitShader();
@@ -36,6 +41,9 @@ public:
   ~Tile();
   void Update(float dt);
   void Render(mat4 ortho_matrix);
+
+  void LoadImage(std::string path);
+
   void SetPosition(vec3 position);
   float* GetPosition();
   void SetSize(vec3 size);

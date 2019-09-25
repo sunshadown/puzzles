@@ -24,7 +24,8 @@ $(SERVER_TMP_DIR)/imgui.o \
 $(SERVER_TMP_DIR)/imgui_draw.o \
 $(SERVER_TMP_DIR)/imgui_widgets.o \
 $(SERVER_TMP_DIR)/imgui_impl_glfw.o \
-$(SERVER_TMP_DIR)/imgui_impl_opengl3.o
+$(SERVER_TMP_DIR)/imgui_impl_opengl3.o \
+#$(ILOADER_LIB)
 
 
 $(TARGET): clean dirs LOADER IMGUI $(FILES)
