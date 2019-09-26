@@ -168,6 +168,7 @@ void Manager::Update(float dt)
     double xpos, ypos;
     glfwGetCursorPos(m_window, &xpos, &ypos);
     ypos = 600 - ypos;
+    if(ypos < 0 || ypos > 600 || xpos < 0 || xpos > 800)return;
     Manager::paint->CheckTile((size_t)xpos, (size_t)ypos);
   }
 }

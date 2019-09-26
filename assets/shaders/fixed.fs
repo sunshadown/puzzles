@@ -6,7 +6,8 @@ in vec2 TexCord;
 out vec4 pixel;
 
 uniform vec3 m_color;
-//uniform sampler2D fixed_uniform;
+uniform vec2 tex_cords;
+uniform sampler2D fixed_uniform;
 
 float glow_size = .5;
 vec3 glow_colour = vec3(0, 0, 0);
@@ -16,7 +17,7 @@ float glow_threshold = .2;
 
 void main()
 {
-  /*//Color = texture2D(fixed_uniform, TexCord);
+  //Color = texture2D(fixed_uniform, TexCord);
   pixel = texture(fixed_uniform, TexCord);
 
   if(pixel.a <= glow_threshold)
@@ -41,6 +42,7 @@ void main()
       sum += h_sum / 9.0;
     }
     pixel = vec4(glow_colour, (sum / 9.0) * glow_intensity);
-  }*/
+  }
   pixel = vec4(m_color, 1.0);
+  pixel = texture(fixed_uniform, TexCord);
 }

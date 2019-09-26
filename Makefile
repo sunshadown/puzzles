@@ -25,11 +25,11 @@ $(SERVER_TMP_DIR)/imgui_draw.o \
 $(SERVER_TMP_DIR)/imgui_widgets.o \
 $(SERVER_TMP_DIR)/imgui_impl_glfw.o \
 $(SERVER_TMP_DIR)/imgui_impl_opengl3.o \
-#$(ILOADER_LIB)
+$(SERVER_TMP_DIR)/loadpng.o
 
 
-$(TARGET): clean dirs LOADER IMGUI $(FILES)
-	$(CC) -o $(SERVER_BIN_DIR)/app $(FILES) $(IFLAGS) $(INTERFACE) $(ILOADER_LIB) $(ILIBS)
+$(TARGET): clean dirs IMGUI $(FILES)
+	$(CC) -o $(SERVER_BIN_DIR)/app $(FILES) $(IFLAGS) $(INTERFACE) $(ILIBS)
 
 $(SERVER_TMP_DIR)/main.o: $(SERVER_SRC_DIR)/main.cpp
 	$(CC) $(CFLAGS) -o $(SERVER_TMP_DIR)/main.o $(SERVER_SRC_DIR)/main.cpp
@@ -56,8 +56,8 @@ IMGUI:
 	$(CC) $(CFLAGS) -o $(SERVER_TMP_DIR)/imgui_impl_glfw.o $(SERVER_LIB_DIR)/includes/imgui_impl_glfw.cpp
 	$(CC) $(CFLAGS) -o $(SERVER_TMP_DIR)/imgui_impl_opengl3.o $(SERVER_LIB_DIR)/includes/imgui_impl_opengl3.cpp
 
-LOADER: dirs $(SERVER_LIB_DIR)/lodepng.c
-	clang $(CFLAGS) -o $(ILOADER_LIB) $(SERVER_LIB_DIR)/lodepng.c
+$(SERVER_TMP_DIR)/loadpng.o: dirs $(SERVER_LIB_DIR)/lodepng.cpp
+	$(CC) $(CFLAGS) -o $(SERVER_TMP_DIR)/loadpng.o $(SERVER_LIB_DIR)/lodepng.cpp
 
 dirs:
 	mkdir -p  $(SERVER_BIN_DIR) $(SERVER_TMP_DIR)

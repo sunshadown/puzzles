@@ -1,11 +1,14 @@
 #include "Tile.h"
 
-//extern "C"  unsigned lodepng_load_file(unsigned char*, size_t*, char*);
-//extern "C" unsigned lodepng_decode32(unsigned char*, unsigned*, unsigned*, unsigned char*, size_t);
 
 Tile::Tile()
 {
   Init();
+}
+
+Tile::Tile(Tile *tile)
+{
+  Copy(tile);
 }
 
 Tile::~Tile()
@@ -102,7 +105,8 @@ void Tile::Render(mat4 ortho_matrix)
     glEnable(GL_TEXTURE_2D);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D,tex_id);
-    glUniform1i(shader.GetLocation("fixed_uniform"), 1);
+    glUniform1i(shader.GetLocation("fixed_uniform"), 0);
+    glUniform2f(shader.GetLocation("tex_cords"), tex_cords[0], tex_cords[1]);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
   }
@@ -122,18 +126,20 @@ void Tile::Render(mat4 ortho_matrix)
 
 void Tile::LoadImage(std::string path)
 {
-  /*unsigned error;
-  unsigned char* image = 0;
+  std::vector<unsigned char> image; //the raw pixels
   unsigned width, height;
-  unsigned char* png = 0;
-  size_t pngsize;
 
-  error = lodepng_load_file(&png, &pngsize, path.c_str());
-  if(error) printf("error %u: %s\n", error, lodepng_error_text(error));
-  if(!error) error = lodepng_decode32(&image, &width, &height, png, pngsize);
-  if(error) printf("error %u: %s\n", error, lodepng_error_text(error));
+  //decode
+  unsigned error = lodepng::decode(image, width, height, path.c_str());
 
-  free(png);
+  //if there's an error, display it
+  if(error)
+  {
+    std::cout << "decoder error " << error << ": " << lodepng_error_text(error) << std::endl;
+    return;
+  }
+  //the pixels are now in the vector "image", 4 bytes per pixel, ordered RGBARGBA..., use it as texture, draw it, ...
+  haveImage = true;
 
   glGenTextures(1,&tex_id);
   glEnable(GL_TEXTURE_2D);
@@ -141,10 +147,34 @@ void Tile::LoadImage(std::string path)
 
   glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
   glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,width,height,0, GL_RGBA, GL_UNSIGNED_BYTE,image);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,width,height,0, GL_RGBA, GL_UNSIGNED_BYTE,&image[0]);
+}
 
-  free(image);
-  */
+void Tile::Copy(Tile *tile)
+{
+  //this->position = tile->position;
+
+  glm_vec3_copy(tile->position,position);
+  glm_vec3_copy(tile->size,size);
+  glm_vec3_copy(tile->scale,scale);
+  glm_vec3_copy(tile->color,color);
+  this->rotate = tile->rotate;
+  this->m_depth = tile->m_depth;
+  this->shader = tile->shader;
+  this->haveImage = tile->haveImage;
+  this->vao = tile->vao;
+  this->tex_id = tile->tex_id;
+  this->elements_size = tile->elements_size;
+}
+
+void Tile::SetVao(GLuint vao)
+{
+  this->vao = vao;
+}
+
+void Tile::SetTexture(GLuint tex_id)
+{
+  this->tex_id = tex_id;
 }
 
 void Tile::SetPosition(vec3 position)

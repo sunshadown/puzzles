@@ -20,9 +20,14 @@ void Paint::CreateTiles()
   size_t num_x = window_x / tile_x;
   size_t num_y = window_y / tile_y;
 
+  Tile *temp_tile = new Tile();
+  temp_tile->LoadImage("./assets/images/background.png");
+
+  float offset = 1.0f/tile_x;
+
   for (size_t i = 0; i < num_y; i++) {
     for (size_t j = 0; j < num_x; j++) {
-      Tile tile;
+      Tile tile(temp_tile);
       vec3 npos;
       vec3 nsize;
       glm_vec3_one(nsize);
