@@ -130,6 +130,7 @@ void Manager::GUI()
 void Manager::Loop()
 {
   Manager::paint = new Paint();
+  paint->TileShuffle();
 
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();

@@ -3,6 +3,7 @@
 
 #include "Tile.h"
 #include <vector>
+#include <algorithm>
 #include <iostream>
 //MATH LIBRARY
 #include "../lib/includes/cglm/cglm.h"
@@ -17,7 +18,7 @@ class Paint
 {
 private:
   const size_t window_x = 800, window_y = 600;
-  const size_t tile_x = 50, tile_y = 50;
+  const size_t tile_x = 100, tile_y = 100;
   void CreateTiles();
 public:
   Paint();
@@ -30,6 +31,7 @@ public:
 
   std::vector<Tile>tiles;
   void CheckTile(size_t x, size_t y);
+  void TileShuffle();
   void Render(mat4 ortho_matrix);
   void ClearAll();
 };

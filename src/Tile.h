@@ -38,7 +38,8 @@ private:
   float m_depth;
   Shader shader;
   bool haveImage;
-
+  int choosen;
+  int id;
 
   void Init();
   void InitPuzzleBuffer(float tile_size, float uv_x, float uv_y);
@@ -68,6 +69,10 @@ public:
   void SetColor(vec3 color);
   float* GetColor();
   void SetRotate(float rotate);
+  int GetChoosen();
+  void SetChoosen(int choosen);
+  void SetID(int id);
+  int GetID();
 };
 
 

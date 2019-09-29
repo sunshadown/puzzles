@@ -26,8 +26,8 @@ void Paint::CreateTiles()
   temp_tile->LoadPuzzleShader();
 
   float offset = 1.0f/num_x;
-  float uv_x = 0.0f, uv_y = 0.0f;
-
+  float uv_x = 0.0f, uv_y = 1.0f - offset;
+  int id = 0;
   for (size_t i = 0; i < num_y; i++) {
     for (size_t j = 0; j < num_x; j++) {
       Tile tile(temp_tile);
@@ -46,10 +46,12 @@ void Paint::CreateTiles()
       tile.SetPosition(npos);
       tile.SetSize(nsize);
       //tile.SetRotate(180.0f);
+      tile.SetID(id);
       tiles.push_back(tile);
+      id++;
       uv_x += offset;
     }
-    uv_y += offset;
+    uv_y -= offset;
     uv_x = 0.0f;
   }
 }
@@ -67,7 +69,11 @@ void Paint::CheckTile(size_t x, size_t y)
   npos_x = (x - npos_x)/tile_x;
   npos_y = (y - npos_y)/tile_y;
 
+  //std::cout << "x: " << npos_x << "y: " << npos_y <<std::endl;
+
   size_t num = npos_x + npos_y*num_x;
+
+  tiles.at(num).SetChoosen(1);
 
   vec3 ncolor;
   if(flag_clear)
@@ -83,6 +89,25 @@ void Paint::CheckTile(size_t x, size_t y)
     glm_vec3_copy(color, ncolor);
     if(can_draw)tiles.at(num).SetColor(ncolor);
     return;
+  }
+}
+
+void Paint::TileShuffle()
+{
+  // using built-in random generator:
+  std::random_shuffle ( tiles.begin(), tiles.end() );
+  size_t num_x = window_x / tile_x;
+  float pos_y = 0.0f;
+
+  for (size_t i = 0, j = 0; i < tiles.size(); i++,j++) {
+    float* npos = tiles.at(i).GetPosition();
+    if(j >= num_x)
+    {
+      pos_y += tile_y;
+      j = 0;
+    }
+    npos[0] = j * tile_x;
+    npos[1] = pos_y;
   }
 }
 

@@ -26,6 +26,7 @@ void Tile::Init()
   rotate = 0.0f;
   m_depth = 0.0f;
   haveImage = false;
+  choosen = 0;
 
   //InitBuffer();
   //InitShader();
@@ -64,12 +65,12 @@ void Tile::InitPuzzleBuffer(float tile_size, float uv_x, float uv_y)
   float offset = tile_size;
   std::vector<float> data;
   //Left Triangle
-  data.push_back(uv_x);data.push_back(uv_y + offset);
+  data.push_back(uv_x);data.push_back(uv_y - offset);
   data.push_back(uv_x + offset);data.push_back(uv_y);
   data.push_back(uv_x);data.push_back(uv_y);
   //Right Triangle
-  data.push_back(uv_x);data.push_back(uv_y + offset);
-  data.push_back(uv_x + offset);data.push_back(uv_y + offset);
+  data.push_back(uv_x);data.push_back(uv_y - offset);
+  data.push_back(uv_x + offset);data.push_back(uv_y - offset);
   data.push_back(uv_x + offset);data.push_back(uv_y);
 
   GLuint puzzle_vbo;
@@ -144,6 +145,7 @@ void Tile::Render(mat4 ortho_matrix)
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D,tex_id);
     glUniform1i(shader.GetLocation("fixed_uniform"), 0);
+    glUniform1i(shader.GetLocation("choosen"), choosen);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
   }
@@ -202,6 +204,7 @@ void Tile::Copy(Tile *tile)
   this->vao = tile->vao;
   this->tex_id = tile->tex_id;
   this->elements_size = tile->elements_size;
+  this->choosen = tile->choosen;
 }
 
 void Tile::LoadPaintShader()
@@ -262,4 +265,25 @@ float* Tile::GetColor()
 void Tile::SetRotate(float rotate)
 {
   this->rotate = rotate;
+}
+
+int Tile::GetChoosen()
+{
+  return choosen;
+}
+
+void Tile::SetChoosen(int choosen)
+{
+  this->choosen = choosen;
+}
+
+
+void Tile::SetID(int id)
+{
+  this->id = id;
+}
+
+int Tile::GetID()
+{
+  return id;
 }
