@@ -27,8 +27,8 @@ void Tile::Init()
   m_depth = 0.0f;
   haveImage = false;
 
-  InitBuffer();
-  InitShader();
+  //InitBuffer();
+  //InitShader();
 }
 
 void Tile::InitBuffer()
@@ -59,10 +59,48 @@ void Tile::InitBuffer()
   glBindVertexArray(0);
 }
 
+void Tile::InitPuzzleBuffer(float tile_size, float uv_x, float uv_y)
+{
+  float offset = tile_size;
+  std::vector<float> data;
+  //Left Triangle
+  data.push_back(uv_x);data.push_back(uv_y + offset);
+  data.push_back(uv_x + offset);data.push_back(uv_y);
+  data.push_back(uv_x);data.push_back(uv_y);
+  //Right Triangle
+  data.push_back(uv_x);data.push_back(uv_y + offset);
+  data.push_back(uv_x + offset);data.push_back(uv_y + offset);
+  data.push_back(uv_x + offset);data.push_back(uv_y);
+
+  GLuint puzzle_vbo;
+  glGenBuffers(1, &puzzle_vbo);
+
+  glBindVertexArray(vao);
+  glBindBuffer(GL_ARRAY_BUFFER, puzzle_vbo);
+
+  glBufferData(GL_ARRAY_BUFFER, sizeof(float)*data.size(), &data[0], GL_STATIC_DRAW);
+  glEnableVertexAttribArray(1);
+  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, 0);
+  elements_size = data.size();
+
+  glBindVertexArray(0);
+}
+
 void Tile::InitShader()
 {
   char* vs = shader.LoadShader("./assets/shaders/fixed.vs", 6000);
   char* fs = shader.LoadShader("./assets/shaders/fixed.fs", 6000);
+  shader.AttachShader(vs, 0);
+  shader.AttachShader(fs, 1);
+  shader.LinkShader();
+  free(vs);
+  free(fs);
+}
+
+void Tile::InitPuzzleShader()
+{
+  char* vs = shader.LoadShader("./assets/shaders/puzzle.vs", 6000);
+  char* fs = shader.LoadShader("./assets/shaders/puzzle.fs", 6000);
   shader.AttachShader(vs, 0);
   shader.AttachShader(fs, 1);
   shader.LinkShader();
@@ -106,7 +144,6 @@ void Tile::Render(mat4 ortho_matrix)
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D,tex_id);
     glUniform1i(shader.GetLocation("fixed_uniform"), 0);
-    glUniform2f(shader.GetLocation("tex_cords"), tex_cords[0], tex_cords[1]);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
   }
@@ -167,6 +204,21 @@ void Tile::Copy(Tile *tile)
   this->elements_size = tile->elements_size;
 }
 
+void Tile::LoadPaintShader()
+{
+  InitShader();
+}
+
+void Tile::LoadPuzzleShader()
+{
+  InitPuzzleShader();
+}
+
+void Tile::LoadPuzzle(float tile_size, float uv_x, float uv_y)
+{
+  InitPuzzleBuffer(tile_size, uv_x, uv_y);
+}
+
 void Tile::SetVao(GLuint vao)
 {
   this->vao = vao;
@@ -205,4 +257,9 @@ float* Tile::GetSize()
 float* Tile::GetColor()
 {
   return color;
+}
+
+void Tile::SetRotate(float rotate)
+{
+  this->rotate = rotate;
 }

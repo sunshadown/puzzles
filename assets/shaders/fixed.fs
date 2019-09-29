@@ -44,5 +44,5 @@ void main()
     pixel = vec4(glow_colour, (sum / 9.0) * glow_intensity);
   }
   pixel = vec4(m_color, 1.0);
-  pixel = texture(fixed_uniform, TexCord);
+  //pixel = texture(fixed_uniform, TexCord);
 }

@@ -30,7 +30,6 @@ private:
   GLuint vao, vbo, ebo, tex_id;
   uint32_t elements_size;
   mat4 model_matrix;
-  vec2 tex_cords;
   vec3 position;
   vec3 size;
   vec3 scale;
@@ -42,8 +41,9 @@ private:
 
 
   void Init();
-  void InitBuffer();
+  void InitPuzzleBuffer(float tile_size, float uv_x, float uv_y);
   void InitShader();
+  void InitPuzzleShader();
 public:
   Tile();
   Tile(Tile *tile);
@@ -54,6 +54,10 @@ public:
   void LoadImage(std::string path);
 
   void Copy(Tile *tile);
+  void LoadPaintShader();
+  void LoadPuzzleShader();
+  void InitBuffer();
+  void LoadPuzzle(float tile_size, float uv_x, float uv_y);
 
   void SetVao(GLuint vao);
   void SetTexture(GLuint tex_id);
@@ -63,6 +67,7 @@ public:
   float* GetSize();
   void SetColor(vec3 color);
   float* GetColor();
+  void SetRotate(float rotate);
 };
 
 

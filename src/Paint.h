@@ -17,7 +17,7 @@ class Paint
 {
 private:
   const size_t window_x = 800, window_y = 600;
-  const size_t tile_x = 20, tile_y = 20;
+  const size_t tile_x = 50, tile_y = 50;
   void CreateTiles();
 public:
   Paint();

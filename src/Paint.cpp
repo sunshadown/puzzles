@@ -21,13 +21,20 @@ void Paint::CreateTiles()
   size_t num_y = window_y / tile_y;
 
   Tile *temp_tile = new Tile();
-  temp_tile->LoadImage("./assets/images/background.png");
+  temp_tile->LoadImage("./assets/images/wallpaper.png");
+  //temp_tile->InitBuffer();
+  temp_tile->LoadPuzzleShader();
 
-  float offset = 1.0f/tile_x;
+  float offset = 1.0f/num_x;
+  float uv_x = 0.0f, uv_y = 0.0f;
 
   for (size_t i = 0; i < num_y; i++) {
     for (size_t j = 0; j < num_x; j++) {
       Tile tile(temp_tile);
+      tile.InitBuffer();
+      tile.LoadPuzzle(offset, uv_x, uv_y);
+      //std::cout << i << " " << j << ", tile cord: " << uv_x << " " << uv_y << std::endl;
+
       vec3 npos;
       vec3 nsize;
       glm_vec3_one(nsize);
@@ -38,15 +45,17 @@ void Paint::CreateTiles()
       nsize[1] *= tile_y;
       tile.SetPosition(npos);
       tile.SetSize(nsize);
+      //tile.SetRotate(180.0f);
       tiles.push_back(tile);
+      uv_x += offset;
     }
+    uv_y += offset;
+    uv_x = 0.0f;
   }
 }
 
 void Paint::CheckTile(size_t x, size_t y)
 {
-  //std::cout <<"mouse x,y: "<< x << " " << y <<std::endl;
-
   size_t num_x = window_x / tile_x;
   size_t num_y = window_y / tile_y;
 
@@ -57,7 +66,7 @@ void Paint::CheckTile(size_t x, size_t y)
   npos_y = y % tile_y;
   npos_x = (x - npos_x)/tile_x;
   npos_y = (y - npos_y)/tile_y;
-  //std::cout << "npos: " <<npos_x << " " << npos_y <<std::endl;
+
   size_t num = npos_x + npos_y*num_x;
 
   vec3 ncolor;
