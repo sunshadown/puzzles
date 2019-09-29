@@ -19,6 +19,7 @@ class Paint
 private:
   const size_t window_x = 800, window_y = 600;
   const size_t tile_x = 100, tile_y = 100;
+  size_t picked_puzzles,puzzle_one, puzzle_two;
   void CreateTiles();
 public:
   Paint();
@@ -31,6 +32,7 @@ public:
 
   std::vector<Tile>tiles;
   void CheckTile(size_t x, size_t y);
+  void CheckPuzzle(size_t num);
   void TileShuffle();
   void Render(mat4 ortho_matrix);
   void ClearAll();

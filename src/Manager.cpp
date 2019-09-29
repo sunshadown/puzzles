@@ -80,6 +80,15 @@ void Manager::mouse_button_callback(GLFWwindow* window, int button, int action, 
       //if(Manager::paint == nullptr)return;
       //Manager::paint->flag_clear = !Manager::paint->flag_clear;
     }
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+    {
+      if(Manager::paint == nullptr)return;
+      double xpos, ypos;
+      glfwGetCursorPos(window, &xpos, &ypos);
+      ypos = 600 - ypos;
+      if(ypos < 0 || ypos > 600 || xpos < 0 || xpos > 800)return;
+      Manager::paint->CheckTile((size_t)xpos, (size_t)ypos);
+    }
 }
 
 void Manager::cursor_position_callback(GLFWwindow* window, double xpos, double ypos)
@@ -162,6 +171,7 @@ void Manager::Loop()
 
 void Manager::Update(float dt)
 {
+  /*
   int state = glfwGetMouseButton(m_window, GLFW_MOUSE_BUTTON_LEFT);
   if (state == GLFW_PRESS)
   {
@@ -172,6 +182,7 @@ void Manager::Update(float dt)
     if(ypos < 0 || ypos > 600 || xpos < 0 || xpos > 800)return;
     Manager::paint->CheckTile((size_t)xpos, (size_t)ypos);
   }
+  */
 }
 
 void Manager::Render()

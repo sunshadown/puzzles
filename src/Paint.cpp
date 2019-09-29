@@ -8,6 +8,7 @@ Paint::Paint()
   flag_clear = false;
   flag_draw = false;
   can_draw = false;
+  picked_puzzles = 0;
 }
 
 Paint::~Paint()
@@ -21,7 +22,7 @@ void Paint::CreateTiles()
   size_t num_y = window_y / tile_y;
 
   Tile *temp_tile = new Tile();
-  temp_tile->LoadImage("./assets/images/wallpaper.png");
+  temp_tile->LoadImage("./assets/images/p1.png");
   //temp_tile->InitBuffer();
   temp_tile->LoadPuzzleShader();
 
@@ -72,8 +73,7 @@ void Paint::CheckTile(size_t x, size_t y)
   //std::cout << "x: " << npos_x << "y: " << npos_y <<std::endl;
 
   size_t num = npos_x + npos_y*num_x;
-
-  tiles.at(num).SetChoosen(1);
+  CheckPuzzle(num);
 
   vec3 ncolor;
   if(flag_clear)
@@ -90,6 +90,35 @@ void Paint::CheckTile(size_t x, size_t y)
     if(can_draw)tiles.at(num).SetColor(ncolor);
     return;
   }
+}
+
+void Paint::CheckPuzzle(size_t num)
+{
+  tiles.at(num).SetChoosen(1);
+  picked_puzzles++;
+  if(picked_puzzles == 1)puzzle_one = num;
+  else puzzle_two = num;
+
+  if(picked_puzzles >= 2)
+  {
+    //swap
+    std::cout << "swaping "<< puzzle_one << " " << puzzle_two << std::endl;
+    vec3 temp_pos1;
+    vec3 temp_pos2;
+    glm_vec3_copy(tiles[puzzle_one].GetPosition(), temp_pos1);
+    glm_vec3_copy(tiles[puzzle_two].GetPosition(), temp_pos2);
+    std::cout << temp_pos1[0] << " " << temp_pos1[1] << std::endl;
+    std::cout << temp_pos2[0] << " " << temp_pos2[1] << std::endl;
+    tiles[puzzle_one].SetPosition(temp_pos2);
+    tiles[puzzle_two].SetPosition(temp_pos1);
+    std::swap(tiles[puzzle_one], tiles[puzzle_two]);
+    picked_puzzles = 0;
+    tiles[puzzle_one].SetChoosen(0);
+    tiles[puzzle_two].SetChoosen(0);
+    return;
+  }
+
+  std::cout << "num " << num << std::endl;
 }
 
 void Paint::TileShuffle()
