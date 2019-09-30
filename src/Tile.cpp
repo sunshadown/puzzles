@@ -27,7 +27,7 @@ void Tile::Init()
   m_depth = 0.0f;
   haveImage = false;
   choosen = 0;
-
+  focused = 0;
   //InitBuffer();
   //InitShader();
 }
@@ -146,6 +146,7 @@ void Tile::Render(mat4 ortho_matrix)
     glBindTexture(GL_TEXTURE_2D,tex_id);
     glUniform1i(shader.GetLocation("fixed_uniform"), 0);
     glUniform1i(shader.GetLocation("choosen"), choosen);
+    glUniform1i(shader.GetLocation("focused"), focused);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
   }
@@ -277,6 +278,15 @@ void Tile::SetChoosen(int choosen)
   this->choosen = choosen;
 }
 
+int Tile::GetFocused()
+{
+  return focused;
+}
+
+void Tile::SetFocused(int focused)
+{
+  this->focused = focused;
+}
 
 void Tile::SetID(int id)
 {

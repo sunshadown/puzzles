@@ -93,8 +93,12 @@ void Manager::mouse_button_callback(GLFWwindow* window, int button, int action, 
 
 void Manager::cursor_position_callback(GLFWwindow* window, double xpos, double ypos)
 {
-  //m_x = xpos;
-  //m_y = ypos;
+  if(Manager::paint == nullptr)return;
+  double xpos_temp = xpos, ypos_temp = ypos;
+  //glfwGetCursorPos(window, &xpos, &ypos);
+  ypos_temp = 600 - ypos;
+  if(ypos_temp < 0 || ypos_temp > 600 || xpos_temp < 0 || xpos_temp > 800)return;
+  Manager::paint->CheckTileFocus((size_t)xpos_temp, (size_t)ypos_temp);
 }
 
 void Manager::GUI()

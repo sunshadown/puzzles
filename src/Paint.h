@@ -5,6 +5,7 @@
 #include <vector>
 #include <algorithm>
 #include <iostream>
+#include <thread> 
 //MATH LIBRARY
 #include "../lib/includes/cglm/cglm.h"
 #include "../lib/includes/cglm/vec3.h"
@@ -32,6 +33,7 @@ public:
 
   std::vector<Tile>tiles;
   void CheckTile(size_t x, size_t y);
+  void CheckTileFocus(size_t x, size_t y);
   void CheckPuzzle(size_t num);
   void TileShuffle();
   void Render(mat4 ortho_matrix);

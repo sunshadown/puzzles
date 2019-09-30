@@ -92,6 +92,22 @@ void Paint::CheckTile(size_t x, size_t y)
   }
 }
 
+void Paint::CheckTileFocus(size_t x, size_t y)
+{
+  size_t num_x = window_x / tile_x;
+  size_t num_y = window_y / tile_y;
+  size_t npos_x, npos_y;
+
+  npos_x = x % tile_x;
+  npos_y = y % tile_y;
+  npos_x = (x - npos_x)/tile_x;
+  npos_y = (y - npos_y)/tile_y;
+
+  size_t num = npos_x + npos_y*num_x;
+
+  //tiles.at(num).SetFocused(1);
+}
+
 void Paint::CheckPuzzle(size_t num)
 {
   tiles.at(num).SetChoosen(1);

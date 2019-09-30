@@ -39,6 +39,7 @@ private:
   Shader shader;
   bool haveImage;
   int choosen;
+  int focused;
   int id;
 
   void Init();
@@ -71,6 +72,8 @@ public:
   void SetRotate(float rotate);
   int GetChoosen();
   void SetChoosen(int choosen);
+  int GetFocused();
+  void SetFocused(int focused);
   void SetID(int id);
   int GetID();
 };
