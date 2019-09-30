@@ -5,7 +5,9 @@
 #include <vector>
 #include <algorithm>
 #include <iostream>
-#include <thread> 
+#include <thread>
+#include <mutex>
+#include <time.h>
 //MATH LIBRARY
 #include "../lib/includes/cglm/cglm.h"
 #include "../lib/includes/cglm/vec3.h"
@@ -18,10 +20,11 @@
 class Paint
 {
 private:
-  const size_t window_x = 800, window_y = 600;
-  const size_t tile_x = 100, tile_y = 100;
+  static const size_t window_x = 800, window_y = 600;
+  static const size_t tile_x = 100, tile_y = 100;
   size_t picked_puzzles,puzzle_one, puzzle_two;
   void CreateTiles();
+
 public:
   Paint();
   ~Paint();
@@ -31,7 +34,11 @@ public:
   bool flag_draw;
   bool can_draw;
 
+  static void TileFocusTimer(std::vector<Tile> *tiles, float dt);
+  static void TileScore(std::vector<Tile> *tiles, float *score);
+
   std::vector<Tile>tiles;
+  static size_t GetTileIndex(size_t x, size_t y);
   void CheckTile(size_t x, size_t y);
   void CheckTileFocus(size_t x, size_t y);
   void CheckPuzzle(size_t num);

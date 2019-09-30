@@ -140,11 +140,31 @@ void Manager::GUI()
   glm_vec3_copy(clear_color, Manager::paint->color);
 }
 
+void Manager::PuzzleGUI()
+{
+  // Start the Dear ImGui frame
+  ImGui_ImplOpenGL3_NewFrame();
+  ImGui_ImplGlfw_NewFrame();
+  ImGui::NewFrame();
+
+  ImGui::Begin("Toolbox");
+  ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+  ImGui::Text("Number of puzzles %d", paint->tiles.size());
+  ImGui::End();
+
+  // Rendering
+  ImGui::Render();
+  ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+
 void Manager::Loop()
 {
   Manager::paint = new Paint();
   paint->TileShuffle();
+  std::thread focus_thread(Paint::TileFocusTimer, &paint->tiles, 0.2f);
+  std::thread score_thread(Paint::TileScore, &paint->tiles, &score);
 
+  //GUI///////////////////////
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();
   ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -154,7 +174,7 @@ void Manager::Loop()
   ImGui_ImplGlfw_InitForOpenGL(m_window, true);
   const char* glsl_version = "#version 330";
   ImGui_ImplOpenGL3_Init(glsl_version);
-
+  ////////////////////////////
 
   double time = glfwGetTime();
   float last_time = time;
@@ -171,6 +191,9 @@ void Manager::Loop()
     glfwSwapBuffers(m_window);
     glfwPollEvents();
   }
+
+  focus_thread.join();
+  score_thread.join();
 }
 
 void Manager::Update(float dt)
@@ -192,5 +215,6 @@ void Manager::Update(float dt)
 void Manager::Render()
 {
   paint->Render(ortho_matrix);
-  GUI();
+  //GUI();
+  PuzzleGUI();
 }

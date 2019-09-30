@@ -206,6 +206,7 @@ void Tile::Copy(Tile *tile)
   this->tex_id = tile->tex_id;
   this->elements_size = tile->elements_size;
   this->choosen = tile->choosen;
+  this->focused = tile->focused;
 }
 
 void Tile::LoadPaintShader()

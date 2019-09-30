@@ -22,7 +22,7 @@ void Paint::CreateTiles()
   size_t num_y = window_y / tile_y;
 
   Tile *temp_tile = new Tile();
-  temp_tile->LoadImage("./assets/images/p1.png");
+  temp_tile->LoadImage("./assets/images/p2.png");
   //temp_tile->InitBuffer();
   temp_tile->LoadPuzzleShader();
 
@@ -57,7 +57,39 @@ void Paint::CreateTiles()
   }
 }
 
-void Paint::CheckTile(size_t x, size_t y)
+void Paint::TileFocusTimer(std::vector<Tile> *tiles, float dt)
+{
+  //struct timespec timespec;
+  //timespec.tv_nsec = 200;
+  std::mutex m_mutex;
+  while(1)
+  {
+    std::lock_guard<std::mutex> lock(m_mutex);
+    for (size_t i = 0; i < tiles->size(); i++) {
+      if(tiles->at(i).GetFocused() >= 1)
+      {
+        tiles->at(i).SetFocused(0);
+      }
+    }
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+  }
+}
+
+void Paint::TileScore(std::vector<Tile> *tiles, float *score)
+{
+  while(1)
+  {
+    *score = 0.0f;
+    for (size_t i = 0; i < tiles->size(); i++) {
+      float* npos = tiles->at(i).GetPosition();
+      size_t num = GetTileIndex(npos[0] + 5.0f, npos[1] + 5.0f);
+      if(num == tiles->at(i).GetID())*score += 1.0f;
+    }
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+  }
+}
+
+size_t Paint::GetTileIndex(size_t x, size_t y)
 {
   size_t num_x = window_x / tile_x;
   size_t num_y = window_y / tile_y;
@@ -73,6 +105,12 @@ void Paint::CheckTile(size_t x, size_t y)
   //std::cout << "x: " << npos_x << "y: " << npos_y <<std::endl;
 
   size_t num = npos_x + npos_y*num_x;
+  return num;
+}
+
+void Paint::CheckTile(size_t x, size_t y)
+{
+  size_t num = GetTileIndex(x,y);
   CheckPuzzle(num);
 
   vec3 ncolor;
@@ -94,18 +132,9 @@ void Paint::CheckTile(size_t x, size_t y)
 
 void Paint::CheckTileFocus(size_t x, size_t y)
 {
-  size_t num_x = window_x / tile_x;
-  size_t num_y = window_y / tile_y;
-  size_t npos_x, npos_y;
+  size_t num = GetTileIndex(x,y);
 
-  npos_x = x % tile_x;
-  npos_y = y % tile_y;
-  npos_x = (x - npos_x)/tile_x;
-  npos_y = (y - npos_y)/tile_y;
-
-  size_t num = npos_x + npos_y*num_x;
-
-  //tiles.at(num).SetFocused(1);
+  tiles.at(num).SetFocused(1);
 }
 
 void Paint::CheckPuzzle(size_t num)

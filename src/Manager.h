@@ -17,6 +17,7 @@
 //#include "lodepng.h"
 #include <string>
 #include <iostream>
+#include <thread>
 
 #include "Paint.h"
 #include "../lib/includes/imgui.h"
@@ -35,6 +36,7 @@ private:
   static void cursor_position_callback(GLFWwindow* window, double xpos, double ypos);
   mat4 ortho_matrix;
   double m_x,m_y;
+  float score;
 public:
   Manager();
   ~Manager();
@@ -42,6 +44,7 @@ public:
   static Paint* paint;
 
   void GUI();
+  void PuzzleGUI();
   void Loop();
   void Update(float dt);
   void Render();

@@ -14,9 +14,13 @@ void main()
   if(choosen > 0)
   {
     pixel.rgb = pixel.rgb * vec3(0.2,0.2,0.7);
+    return;
   }
+
   if(focused > 0)
   {
     pixel.rgb = pixel.rgb * vec3(0.2,0.7,0.0);
+    return;
   }
+
 }
