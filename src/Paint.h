@@ -23,7 +23,7 @@ private:
   static const size_t window_x = 800, window_y = 600;
   static const size_t tile_x = 100, tile_y = 100;
   size_t picked_puzzles,puzzle_one, puzzle_two;
-  void CreateTiles();
+  void CreateTiles(std::string path);
 
 public:
   Paint();

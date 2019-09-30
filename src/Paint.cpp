@@ -3,7 +3,7 @@
 
 Paint::Paint()
 {
-  CreateTiles();
+  CreateTiles("./assets/images/p1.png");
   glm_vec3_zero(color);
   flag_clear = false;
   flag_draw = false;
@@ -16,13 +16,14 @@ Paint::~Paint()
 
 }
 
-void Paint::CreateTiles()
+void Paint::CreateTiles(std::string path)
 {
   size_t num_x = window_x / tile_x;
   size_t num_y = window_y / tile_y;
 
   Tile *temp_tile = new Tile();
-  temp_tile->LoadImage("./assets/images/p2.png");
+  tiles.clear();
+  temp_tile->LoadImage(path.c_str());
   //temp_tile->InitBuffer();
   temp_tile->LoadPuzzleShader();
 
@@ -71,7 +72,7 @@ void Paint::TileFocusTimer(std::vector<Tile> *tiles, float dt)
         tiles->at(i).SetFocused(0);
       }
     }
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
   }
 }
 

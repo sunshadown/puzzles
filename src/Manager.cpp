@@ -85,8 +85,8 @@ void Manager::mouse_button_callback(GLFWwindow* window, int button, int action, 
       if(Manager::paint == nullptr)return;
       double xpos, ypos;
       glfwGetCursorPos(window, &xpos, &ypos);
+      if(ypos < 0.1f || ypos > 600 || xpos < 0 || xpos > 800)return;
       ypos = 600 - ypos;
-      if(ypos < 0 || ypos > 600 || xpos < 0 || xpos > 800)return;
       Manager::paint->CheckTile((size_t)xpos, (size_t)ypos);
     }
 }
@@ -97,7 +97,7 @@ void Manager::cursor_position_callback(GLFWwindow* window, double xpos, double y
   double xpos_temp = xpos, ypos_temp = ypos;
   //glfwGetCursorPos(window, &xpos, &ypos);
   ypos_temp = 600 - ypos;
-  if(ypos_temp < 0 || ypos_temp > 600 || xpos_temp < 0 || xpos_temp > 800)return;
+  if(ypos_temp < 0.1f || ypos_temp > 600 || xpos_temp < 0 || xpos_temp > 800)return;
   Manager::paint->CheckTileFocus((size_t)xpos_temp, (size_t)ypos_temp);
 }
 
@@ -150,6 +150,16 @@ void Manager::PuzzleGUI()
   ImGui::Begin("Toolbox");
   ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
   ImGui::Text("Number of puzzles %d", paint->tiles.size());
+  // Animate a simple progress bar
+  static float progress = 0.0f, progress_dir = 1.0f;
+  progress += progress_dir * 0.4f * ImGui::GetIO().DeltaTime;
+  if (progress >= +1.1f) { progress = +1.1f; progress_dir *= -1.0f; }
+  if (progress <= -0.1f) { progress = -0.1f; progress_dir *= -1.0f; }
+  // Typically we would use ImVec2(-1.0f,0.0f) or ImVec2(-FLT_MIN,0.0f) to use all available width,
+  // or ImVec2(width,0.0f) for a specified width. ImVec2(0.0f,0.0f) uses ItemWidth.
+  ImGui::ProgressBar(score / paint->tiles.size(), ImVec2(0.0f,0.0f));
+  ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
+  ImGui::Text("Progress Bar");
   ImGui::End();
 
   // Rendering
