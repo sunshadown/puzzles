@@ -58,7 +58,7 @@ void Paint::CreateTiles(std::string path)
   }
 }
 
-void Paint::TileFocusTimer(std::vector<Tile> *tiles, float dt)
+void Paint::TileFocusTimer(std::vector<Tile> *tiles, float dt, GLFWwindow* window)
 {
   //struct timespec timespec;
   //timespec.tv_nsec = 200;
@@ -69,7 +69,19 @@ void Paint::TileFocusTimer(std::vector<Tile> *tiles, float dt)
     for (size_t i = 0; i < tiles->size(); i++) {
       if(tiles->at(i).GetFocused() >= 1)
       {
-        tiles->at(i).SetFocused(0);
+        double time = glfwGetTime();
+        double xpos, ypos;
+        glfwGetCursorPos(window, &xpos, &ypos);
+        ypos = 600 - ypos;
+        size_t num = GetTileIndex(xpos,ypos);
+        float* tile_pos = tiles->at(i).GetPosition();
+        size_t num_tile = GetTileIndex(tile_pos[0], tile_pos[1]);
+        if(num == num_tile)continue;
+        if(time - tiles->at(i).timestamp >= dt)
+        {
+          tiles->at(i).SetFocused(0);
+          tiles->at(i).timestamp = 0.0f;
+        }
       }
     }
     std::this_thread::sleep_for(std::chrono::milliseconds(500));
@@ -134,7 +146,7 @@ void Paint::CheckTile(size_t x, size_t y)
 void Paint::CheckTileFocus(size_t x, size_t y)
 {
   size_t num = GetTileIndex(x,y);
-
+  tiles.at(num).timestamp = glfwGetTime();
   tiles.at(num).SetFocused(1);
 }
 

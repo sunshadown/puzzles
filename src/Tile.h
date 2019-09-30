@@ -50,6 +50,9 @@ public:
   Tile();
   Tile(Tile *tile);
   ~Tile();
+
+  double timestamp;
+
   void Update(float dt);
   void Render(mat4 ortho_matrix);
 
@@ -62,6 +65,7 @@ public:
   void LoadPuzzle(float tile_size, float uv_x, float uv_y);
 
   void SetVao(GLuint vao);
+  GLuint GetTexture();
   void SetTexture(GLuint tex_id);
   void SetPosition(vec3 position);
   float* GetPosition();

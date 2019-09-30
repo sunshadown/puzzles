@@ -8,6 +8,8 @@
 #include <thread>
 #include <mutex>
 #include <time.h>
+
+#include "../lib/includes/GLFW/glfw3.h"
 //MATH LIBRARY
 #include "../lib/includes/cglm/cglm.h"
 #include "../lib/includes/cglm/vec3.h"
@@ -34,7 +36,7 @@ public:
   bool flag_draw;
   bool can_draw;
 
-  static void TileFocusTimer(std::vector<Tile> *tiles, float dt);
+  static void TileFocusTimer(std::vector<Tile> *tiles, float dt, GLFWwindow* window);
   static void TileScore(std::vector<Tile> *tiles, float *score);
 
   std::vector<Tile>tiles;

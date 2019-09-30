@@ -101,6 +101,7 @@ void Manager::cursor_position_callback(GLFWwindow* window, double xpos, double y
   Manager::paint->CheckTileFocus((size_t)xpos_temp, (size_t)ypos_temp);
 }
 
+
 void Manager::GUI()
 {
   static vec3 clear_color;
@@ -159,7 +160,12 @@ void Manager::PuzzleGUI()
   // or ImVec2(width,0.0f) for a specified width. ImVec2(0.0f,0.0f) uses ItemWidth.
   ImGui::ProgressBar(score / paint->tiles.size(), ImVec2(0.0f,0.0f));
   ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
-  ImGui::Text("Progress Bar");
+  ImGui::Text("Score");
+  ImVec4 tint_col = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
+  ImVec4 border_col = ImVec4(1.0f, 1.0f, 1.0f, 0.5f);
+  GLuint tex_id = paint->tiles.at(0).GetTexture();
+  ImTextureID m_tex = &tex_id;
+  ImGui::Image(m_tex, ImVec2(800, 600), ImVec2(0,0), ImVec2(1,1), ImVec4(1.0f,1.0f,1.0f,1.0f), ImVec4(1.0f,1.0f,1.0f,0.5f));
   ImGui::End();
 
   // Rendering
@@ -171,7 +177,7 @@ void Manager::Loop()
 {
   Manager::paint = new Paint();
   paint->TileShuffle();
-  std::thread focus_thread(Paint::TileFocusTimer, &paint->tiles, 0.2f);
+  std::thread focus_thread(Paint::TileFocusTimer, &paint->tiles, 0.3f, m_window);
   std::thread score_thread(Paint::TileScore, &paint->tiles, &score);
 
   //GUI///////////////////////

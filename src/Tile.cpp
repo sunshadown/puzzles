@@ -229,6 +229,11 @@ void Tile::SetVao(GLuint vao)
   this->vao = vao;
 }
 
+GLuint Tile::GetTexture()
+{
+  return tex_id;
+}
+
 void Tile::SetTexture(GLuint tex_id)
 {
   this->tex_id = tex_id;
