@@ -3,7 +3,7 @@
 
 Paint::Paint()
 {
-  CreateTiles("./assets/images/p1.png");
+  CreateTiles("./assets/images/p4.png");
   glm_vec3_zero(color);
   flag_clear = false;
   flag_draw = false;

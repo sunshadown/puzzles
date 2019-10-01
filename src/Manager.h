@@ -28,12 +28,16 @@ class Manager
 {
 private:
   GLFWwindow* m_window;
+  GLFWimage image;
+  GLFWcursor* cursor;
+  
   void Init();
   void InitMatrcies();
   void CreateWindow(int width, int height, std::string window_name);
   static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
   static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
   static void cursor_position_callback(GLFWwindow* window, double xpos, double ypos);
+  void CreateCursor();
   mat4 ortho_matrix;
   double m_x,m_y;
   float score;

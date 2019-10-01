@@ -97,10 +97,37 @@ void Manager::cursor_position_callback(GLFWwindow* window, double xpos, double y
   double xpos_temp = xpos, ypos_temp = ypos;
   //glfwGetCursorPos(window, &xpos, &ypos);
   ypos_temp = 600 - ypos;
-  if(ypos_temp < 0.1f || ypos_temp > 600 || xpos_temp < 0 || xpos_temp > 800)return;
+  if(ypos_temp <= 0.1f || ypos_temp >= 600 || xpos_temp <= 0.1 || xpos_temp >= 800)return;
   Manager::paint->CheckTileFocus((size_t)xpos_temp, (size_t)ypos_temp);
 }
 
+void Manager::CreateCursor()
+{
+  std::vector<unsigned char> png_image; //the raw pixels
+  unsigned width, height;
+
+  //decode
+  unsigned error = lodepng::decode(png_image, width, height, "./assets/images/cursor4.png");
+
+  //if there's an error, display it
+  if(error)
+  {
+    std::cout << "decoder error " << error << ": " << lodepng_error_text(error) << std::endl;
+    return;
+  }
+
+  image.width = 64;
+  image.height = 64;
+  image.pixels = &png_image[0];
+
+  cursor = glfwCreateCursor(&image, 0, 0);
+  if(cursor == NULL)
+  {
+    std::cout << "Cant create cursor" << std::endl;
+    return;
+  }
+  glfwSetCursor(m_window, cursor);
+}
 
 void Manager::GUI()
 {
@@ -144,11 +171,17 @@ void Manager::GUI()
 void Manager::PuzzleGUI()
 {
   // Start the Dear ImGui frame
+
+  ImGuiIO& io = ImGui::GetIO();
+  io.MouseDrawCursor = false;
+
   ImGui_ImplOpenGL3_NewFrame();
   ImGui_ImplGlfw_NewFrame();
   ImGui::NewFrame();
 
   ImGui::Begin("Toolbox");
+
+
   ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
   ImGui::Text("Number of puzzles %d", paint->tiles.size());
   // Animate a simple progress bar
@@ -175,9 +208,10 @@ void Manager::PuzzleGUI()
 
 void Manager::Loop()
 {
+
   Manager::paint = new Paint();
   paint->TileShuffle();
-  std::thread focus_thread(Paint::TileFocusTimer, &paint->tiles, 0.3f, m_window);
+  std::thread focus_thread(Paint::TileFocusTimer, &paint->tiles, 0.1f, m_window);
   std::thread score_thread(Paint::TileScore, &paint->tiles, &score);
 
   //GUI///////////////////////
@@ -190,6 +224,7 @@ void Manager::Loop()
   ImGui_ImplGlfw_InitForOpenGL(m_window, true);
   const char* glsl_version = "#version 330";
   ImGui_ImplOpenGL3_Init(glsl_version);
+  CreateCursor();
   ////////////////////////////
 
   double time = glfwGetTime();
