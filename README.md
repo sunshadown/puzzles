@@ -7,4 +7,4 @@ Created with OpenGL using C/C++ and libraries:
 4. [Imgui](https://github.com/ocornut/imgui)
 
 
-![alt text](https://github.com/sunshadown/puzzles/tree/Puzzles/puzzle.png)
+![overview](puzzle.png "logo")
